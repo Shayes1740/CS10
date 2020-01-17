@@ -12,7 +12,7 @@ import java.util.*;
  * @author CBK, Spring 2015, updated for CamPaint
  */
 public class RegionFinder {
-    private static final int maxColorDiff = 50;                // how similar a pixel color must be to the target color, to belong to a region
+    private static final int maxColorDiff = 80;                // how similar a pixel color must be to the target color, to belong to a region
     private static final int minRegion = 50;                // how many points in a region to be worth considering
     private static final int radius = 1;
 
@@ -51,10 +51,10 @@ public class RegionFinder {
     public void findRegions(Color targetColor) {
         // TODO: YOUR CODE HERE
         BufferedImage visited = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        innerRegion = new ArrayList<>();
+        innerRegion = new ArrayList<Point>();
         toVisit = new ArrayList<Point>();
         regions = new ArrayList<ArrayList<Point>>();
-
+        System.out.println("width:"+ image.getWidth()+ " height:"+image.getHeight());
 
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
@@ -62,53 +62,61 @@ public class RegionFinder {
                 int regionSearch = 0;
                 Color initialColor = new Color(image.getRGB(x, y));
                 if (colorMatch(initialColor, targetColor)) {
-                    System.out.println("first point found");
-                    System.out.println("Initial color match " + initialColor);
-                        toVisit.add(new Point(x, y));
-                        while (toVisit.get(regionSearch) != null) {
-                            int nx = (int) (toVisit.get(regionSearch).getX());
-                            int ny = (int) (toVisit.get(regionSearch).getY());
-                            visited.setRGB(nx, ny, 1);
-                            //System.out.println("nx:" + nx + ", ny:" + ny);
-                            regionSearch++;
+                    //System.out.println("first point found");
+                    //System.out.println("Initial color match " + initialColor);
+                    toVisit.add(new Point(x, y));
+                    while (toVisit.size() > regionSearch) {
+                        int nx = (int) (toVisit.get(regionSearch).getX());
+                        int ny = (int) (toVisit.get(regionSearch).getY());
+                        visited.setRGB(nx, ny, 1);
+                        //System.out.println("nx:" + nx + ", ny:" + ny);
+                        regionSearch++;
 
 
-                            for (int b = Math.max(0, ny - radius); b < Math.min(image.getHeight(), ny + radius); b++) {
-                                for (int a = Math.max(0, nx - radius); a < Math.min(image.getWidth(), nx + radius); a++) {
-                                    //System.out.println("a:" + a + ", b:" + b);
-                                    System.out.println("entering inner loop");
-									Color checkedColor = new Color(image.getRGB(a, b));
-                                    System.out.println(checkedColor);
-                                    if (visited.getRGB(a, b) == 0){
-                                        if (colorMatch(checkedColor, targetColor)) {
-                                            System.out.println("match found");
-                                            innerRegion.add(new Point(a, b));
-                                            System.out.println("Inner Region Size: "+innerRegion.size());
-                                            toVisit.add(new Point(a, b));
-                                        }
+                        for (int b = Math.max(0, ny - radius); b <= Math.min(image.getHeight(), ny + radius); b++) {
+                            for (int a = Math.max(0, nx - radius); a <= Math.min(image.getWidth(), nx + radius); a++) {
+                                //System.out.println("a:" + a + ", b:" + b);
+                                //System.out.println("entering inner loop");
+                                Color checkedColor = new Color(image.getRGB(a, b));
+                                //System.out.println(checkedColor);
+                                if (visited.getRGB(a, b) == 0){
+                                    //System.out.println("step 1");
+                                    if (colorMatch(checkedColor, targetColor)) {
+                                        //System.out.println("match found");
+                                        innerRegion.add(new Point(a, b));
+                                        //System.out.println("added to innerRegion");
+                                       //System.out.println("Inner Region Size: "+innerRegion.size());
+                                        toVisit.add(new Point(a, b));
+                                    }
+                                    else {
+                                        visited.setRGB(a, b, 1);
                                     }
                                 }
                             }
-                            System.out.println("Kinda made it out");
-                            //System.out.println("Inner Region Size: "+innerRegion.size());
-						}
-                    System.out.println("Made it out");
-						//deal with removal of toVisit and check region size
-						toVisit.clear();
-
-						if (innerRegion.size() >= minRegion){
-							regions.add(innerRegion);
-							innerRegion.clear();
-						}
-						else {
-							innerRegion.clear();
-						}
+                        }
+                       // System.out.println("Kinda made it out");
+                        //System.out.println("Inner Region Size: "+innerRegion.size());
+                    }
+                    //System.out.println("Made it out");
+                    toVisit.clear();
+                    //System.out.println("clear toVisit");
+                    //System.out.println("toVisit size" +toVisit.size());
+                    if (innerRegion.size() >= minRegion){
+                        System.out.println("Made the cut!!!!!");
+                        regions.add(innerRegion);
+                        innerRegion.clear();
+                    }
+                    else {
+                        innerRegion.clear();
+                    }
+                    //System.out.println("innerRegion size" + innerRegion.size());
 
 
 
                 }
             }
         }
+        System.out.println("all done");
     }
 
 	/**
@@ -134,7 +142,7 @@ public class RegionFinder {
 		int maxRegionSize = 0;
 		int maxRegionIndex = 0;
 
-		while(regions.get(entireRegionSearch) != null){
+		while((regions.get(entireRegionSearch)) < (regions.size())){
 			if (regions.get(entireRegionSearch).size() >= maxRegionSize){
 				maxRegionIndex = entireRegionSearch;
 			}
@@ -161,16 +169,16 @@ public class RegionFinder {
 		int chosenColor;
 
 
-//		while (regions.get(regionIndex) != null){
-//			chosenColor = (int)(Math.random()*(maxColorValue+ 1)); //generates random number in range of colors
-//			Color color = new Color(chosenColor); //creates new color with chosen color value
-//			while(regions.get(regionIndex).get(pixelIndex) != null){
-//				int nx = (int) (regions.get(regionIndex).get(pixelIndex).getX());
-//				int ny = (int) (regions.get(regionIndex).get(pixelIndex).getY());
-//				recoloredImage.setRGB(nx, ny, color.getRGB());
-//				pixelIndex++;
-//			}
-//			regionIndex++;
-//		}
+		while (regions.get(regionIndex) != null){
+			chosenColor = (int)(Math.random()*(maxColorValue+ 1)); //generates random number in range of colors
+			Color color = new Color(chosenColor); //creates new color with chosen color value
+			while(regions.get(regionIndex).get(pixelIndex) != null){
+				int nx = (int) (regions.get(regionIndex).get(pixelIndex).getX());
+				int ny = (int) (regions.get(regionIndex).get(pixelIndex).getY());
+				recoloredImage.setRGB(nx, ny, color.getRGB());
+				pixelIndex++;
+			}
+			regionIndex++;
+		}
 	}
 }
