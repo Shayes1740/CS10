@@ -35,8 +35,8 @@ public class RegionsTest extends DrawingGUI {
 	public static void main(String[] args) { 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				//new RegionsTest("smiley", new RegionFinder(loadImage("pictures/smiley.png")), new Color(0, 0, 0));
-				new RegionsTest("baker", new RegionFinder(loadImage("pictures/baker.jpg")), new Color(130, 100, 100));
+				new RegionsTest("smiley", new RegionFinder(loadImage("pictures/smiley.png")), new Color(0, 0, 0));
+				//new RegionsTest("baker", new RegionFinder(loadImage("pictures/baker.jpg")), new Color(130, 100, 100));
 			}
 		});
 	}
