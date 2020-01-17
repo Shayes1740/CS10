@@ -73,15 +73,15 @@ public class RegionFinder {
                             regionSearch++;
 
 
-                            for (int b = Math.max(0, ny - radius); b <= Math.min(image.getHeight(), ny + radius); b++) {
-                                for (int a = Math.max(0, nx - radius); a <= Math.min(image.getWidth(), nx + radius); a++) {
+                            for (int b = Math.max(0, ny - radius); b < Math.min(image.getHeight(), ny + radius); b++) {
+                                for (int a = Math.max(0, nx - radius); a < Math.min(image.getWidth(), nx + radius); a++) {
                                     //System.out.println("a:" + a + ", b:" + b);
                                     System.out.println("entering inner loop");
 									Color checkedColor = new Color(image.getRGB(a, b));
                                     System.out.println(checkedColor);
                                     if (visited.getRGB(a, b) == 0){
                                         if (colorMatch(checkedColor, targetColor)) {
-                                            //System.out.println("match found");
+                                            System.out.println("match found");
                                             innerRegion.add(new Point(a, b));
                                             System.out.println("Inner Region Size: "+innerRegion.size());
                                             toVisit.add(new Point(a, b));
@@ -89,8 +89,10 @@ public class RegionFinder {
                                     }
                                 }
                             }
+                            System.out.println("Kinda made it out");
                             //System.out.println("Inner Region Size: "+innerRegion.size());
 						}
+                    System.out.println("Made it out");
 						//deal with removal of toVisit and check region size
 						toVisit.clear();
 
