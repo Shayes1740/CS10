@@ -12,7 +12,7 @@ import java.util.*;
  * @author CBK, Spring 2015, updated for CamPaint
  */
 public class RegionFinder {
-    private static final int maxColorDiff = 20;                // how similar a pixel color must be to the target color, to belong to a region
+    private static final int maxColorDiff = 50;                // how similar a pixel color must be to the target color, to belong to a region
     private static final int minRegion = 50;                // how many points in a region to be worth considering
     private static final int radius = 1;
 
@@ -62,6 +62,8 @@ public class RegionFinder {
                 int regionSearch = 0;
                 Color initialColor = new Color(image.getRGB(x, y));
                 if (colorMatch(initialColor, targetColor)) {
+                    System.out.println("first point found");
+                    System.out.println("Initial color match " + initialColor);
                         toVisit.add(new Point(x, y));
                         while (toVisit.get(regionSearch) != null) {
                             int nx = (int) (toVisit.get(regionSearch).getX());
@@ -74,18 +76,20 @@ public class RegionFinder {
                             for (int b = Math.max(0, ny - radius); b <= Math.min(image.getHeight(), ny + radius); b++) {
                                 for (int a = Math.max(0, nx - radius); a <= Math.min(image.getWidth(), nx + radius); a++) {
                                     //System.out.println("a:" + a + ", b:" + b);
+                                    System.out.println("entering inner loop");
 									Color checkedColor = new Color(image.getRGB(a, b));
-                                    //System.out.println(checkedColor);
+                                    System.out.println(checkedColor);
                                     if (visited.getRGB(a, b) == 0){
                                         if (colorMatch(checkedColor, targetColor)) {
                                             //System.out.println("match found");
                                             innerRegion.add(new Point(a, b));
+                                            System.out.println("Inner Region Size: "+innerRegion.size());
                                             toVisit.add(new Point(a, b));
                                         }
                                     }
                                 }
                             }
-                            System.out.println("Inner Region Size: "+innerRegion.size());
+                            //System.out.println("Inner Region Size: "+innerRegion.size());
 						}
 						//deal with removal of toVisit and check region size
 						toVisit.clear();
