@@ -12,7 +12,7 @@ import java.util.*;
  * @author CBK, Spring 2015, updated for CamPaint
  */
 public class RegionFinder {
-    private static final int maxColorDiff = 100;                // how similar a pixel color must be to the target color, to belong to a region
+    private static final int maxColorDiff = 150;                // how similar a pixel color must be to the target color, to belong to a region
     private static final int minRegion = 50;                // how many points in a region to be worth considering
     private static final int radius = 1;
 
@@ -136,10 +136,10 @@ public class RegionFinder {
 		int maxColorValue = 16777216;
 		int chosenColor;
 
-		for(ArrayList<Point> region: regions){
+		for (ArrayList<Point> region: regions){
             chosenColor = (int)(Math.random()*(maxColorValue+ 1)); //generates random number in range of colors
             Color color = new Color(chosenColor); //creates new color with chosen color value
-            for(Point points: region){
+            for (Point points: region){
                 recoloredImage.setRGB(points.x, points.y, color.getRGB());
             }
         }

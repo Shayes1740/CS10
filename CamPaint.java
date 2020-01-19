@@ -39,14 +39,15 @@ public class CamPaint extends Webcam {
 	@Override
 	public void draw(Graphics g) {
 		// TODO: YOUR CODE HERE
-	}
-
-	/**
-	 * Webcam method, here finding regions and updating the painting.
-	 */
-	@Override
-	public void processImage() {
-		// TODO: YOUR CODE HERE
+		if (displayMode == 'w'){
+			super.draw(g);
+		}
+		else if (displayMode == 'r'){
+			g.drawImage(painting, 0, 0, null);
+		}
+		else if(displayMode == 'p'){
+			g.drawImage(painting, 0, 0, null);
+		}
 	}
 
 	/**
@@ -55,7 +56,30 @@ public class CamPaint extends Webcam {
 	@Override
 	public void handleMousePress(int x, int y) {
 		// TODO: YOUR CODE HERE
+		if (image != null) {
+			targetColor = new Color(image.getRGB(x, y));
+			System.out.println("tracking " + targetColor);
+		}
 	}
+
+	/**
+	 * Webcam method, here finding regions and updating the painting.
+	 */
+	@Override
+	public void processImage() {
+		// TODO: YOUR CODE HERE
+		ArrayList<Point> finalRegion = new ArrayList<>();
+		if (targetColor != null && image != null){
+			finder = new RegionFinder(image);
+			finder.findRegions(targetColor);
+		}
+		//finalRegion = finder.largestRegion();
+
+		//finder.recolorImage();
+		//painting = finder.getRecoloredImage();
+
+	}
+
 
 	/**
 	 * DrawingGUI method, here doing various drawing commands
