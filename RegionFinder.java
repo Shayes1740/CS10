@@ -12,7 +12,7 @@ import java.util.*;
  * @author CBK, Spring 2015, updated for CamPaint
  */
 public class RegionFinder {
-    private static final int maxColorDiff = 150;                // how similar a pixel color must be to the target color, to belong to a region
+    private static final int maxColorDiff = 250;                // how similar a pixel color must be to the target color, to belong to a region
     private static final int minRegion = 50;                // how many points in a region to be worth considering
     private static final int radius = 1;
 
@@ -37,6 +37,10 @@ public class RegionFinder {
         this.image = image;
     }
 
+    public void setRegions (ArrayList<ArrayList<Point>> regions){
+        this.regions = regions;
+    }
+
     public BufferedImage getImage() {
         return image;
     }
@@ -51,33 +55,25 @@ public class RegionFinder {
     public void findRegions(Color targetColor) {
         // TODO: YOUR CODE HERE
         BufferedImage visited = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        System.out.println("width:"+ image.getWidth()+ " height:"+image.getHeight());
 
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 innerRegion = new ArrayList<Point>();
                 toVisit = new ArrayList<Point>();
-                //System.out.println("x:" + x + ", y:" + y);
 
-                Color initialColor = new Color(image.getRGB(x, y));
-                if (colorMatch(initialColor, targetColor)) {
-                    //System.out.println("first point found");
-                    //System.out.println("Initial color match " + initialColor);
+                if(visited.getRGB(x,y) == 0 && colorMatch(targetColor, new Color(image.getRGB(x,y)))){
                     toVisit.add(new Point(x, y));
+                }
+
                     while (toVisit.size() > 0) {
                         for (int i = 0; i < toVisit.size(); i++) {
-                            int nx = (int) (toVisit.get(i).getX());
-                            int ny = (int) (toVisit.get(i).getY());
-                            //System.out.println("nx:" + nx + ", ny:" + ny);
+                            int nx = toVisit.get(i).x;
+                            int ny = toVisit.get(i).y;
 
                             for (int b = Math.max(0, ny - radius); b <= Math.min(image.getHeight(), ny + radius); b++) {
                                 for (int a = Math.max(0, nx - radius); a <= Math.min(image.getWidth(), nx + radius); a++) {
-                                    //System.out.println("a:" + a + ", b:" + b);
-                                    //System.out.println("entering inner loop");
                                     Color checkedColor = new Color(image.getRGB(a, b));
-                                    //System.out.println(checkedColor);
                                     if (visited.getRGB(a, b) == 0 && colorMatch(checkedColor, targetColor)){
-                                        //System.out.println("step 1");
                                         toVisit.add(new Point(a, b));
                                         innerRegion.add(toVisit.get(i));
                                     }
@@ -85,17 +81,14 @@ public class RegionFinder {
                             }
                             visited.setRGB(nx, ny, 1);
                             toVisit.remove(toVisit.get(i));
-                            // System.out.println("Kinda made it out");
                         }
                     }
                     if (innerRegion.size() >= minRegion) {
                         regions.add(innerRegion);
                     }
 
-                }
             }
         }
-        System.out.println("all done");
     }
 
 	/**
@@ -130,18 +123,23 @@ public class RegionFinder {
 	 */
 	public void recolorImage() {
 		// First copy the original
-		recoloredImage = new BufferedImage(image.getColorModel(), image.copyData(null), image.getColorModel().isAlphaPremultiplied(), null);
-		// Now recolor the regions in it
-		// TODO: YOUR CODE HERE
-		int maxColorValue = 16777216;
-		int chosenColor;
+        try {
+            recoloredImage = new BufferedImage(image.getColorModel(), image.copyData(null), image.getColorModel().isAlphaPremultiplied(), null);
+            // Now recolor the regions in it
+            // TODO: YOUR CODE HERE
+            int maxColorValue = 16777216;
+            int chosenColor;
 
-		for (ArrayList<Point> region: regions){
-            chosenColor = (int)(Math.random()*(maxColorValue+ 1)); //generates random number in range of colors
-            Color color = new Color(chosenColor); //creates new color with chosen color value
-            for (Point points: region){
-                recoloredImage.setRGB(points.x, points.y, color.getRGB());
+            for (ArrayList<Point> region : regions) {
+                chosenColor = (int) (Math.random() * (maxColorValue + 1)); //generates random number in range of colors
+                Color color = new Color(chosenColor); //creates new color with chosen color value
+                for (Point points : region) {
+                    recoloredImage.setRGB(points.x, points.y, color.getRGB());
+                }
             }
+        }
+        catch(Exception e){
+            System.out.println("too slow");
         }
 	}
 }

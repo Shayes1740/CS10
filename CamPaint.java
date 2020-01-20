@@ -39,15 +39,20 @@ public class CamPaint extends Webcam {
 	@Override
 	public void draw(Graphics g) {
 		// TODO: YOUR CODE HERE
-		if (displayMode == 'w'){
-			super.draw(g);
+
+		if (image != null){
+			processImage();
+			if (displayMode == 'w'){
+				super.draw(g);
+			}
+			else if (displayMode == 'r'){
+				g.drawImage(finder.getRecoloredImage(), 0, 0, null);
+			}
+			else if(displayMode == 'p'){
+				g.drawImage(painting, 0, 0, null);
+			}
 		}
-		else if (displayMode == 'r'){
-			g.drawImage(painting, 0, 0, null);
-		}
-		else if(displayMode == 'p'){
-			g.drawImage(painting, 0, 0, null);
-		}
+
 	}
 
 	/**
@@ -56,10 +61,8 @@ public class CamPaint extends Webcam {
 	@Override
 	public void handleMousePress(int x, int y) {
 		// TODO: YOUR CODE HERE
-		if (image != null) {
 			targetColor = new Color(image.getRGB(x, y));
 			System.out.println("tracking " + targetColor);
-		}
 	}
 
 	/**
@@ -68,16 +71,26 @@ public class CamPaint extends Webcam {
 	@Override
 	public void processImage() {
 		// TODO: YOUR CODE HERE
-		ArrayList<Point> finalRegion = new ArrayList<>();
-		if (targetColor != null && image != null){
-			finder = new RegionFinder(image);
+
+		if (image != null && targetColor != null) {
+			finder.setImage(image);
+			if (displayMode == 'r') {
+				finder.setRegions(new ArrayList<ArrayList<Point>>());
+			}
 			finder.findRegions(targetColor);
+			if (displayMode == 'p') {
+				ArrayList<Point> finalRegion = finder.largestRegion();
+				for (Point points : finalRegion) {
+					if (painting.getRGB(points.x, points.y) != paintColor.getRGB()){
+						painting.setRGB(points.x, points.y, paintColor.getRGB());
+					}
+				}
+			}
+			else if (displayMode == 'r') {
+				finder.recolorImage();
+			}
+
 		}
-		//finalRegion = finder.largestRegion();
-
-		//finder.recolorImage();
-		//painting = finder.getRecoloredImage();
-
 	}
 
 
