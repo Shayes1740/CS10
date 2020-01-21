@@ -13,7 +13,7 @@ import javax.swing.*;
 public class CamPaint extends Webcam {
 	private char displayMode = 'w';			// what to display: 'w': live webcam, 'r': recolored image, 'p': painting
 	private RegionFinder finder;			// handles the finding
-	private Color targetColor;          	// color of regions of interest (set by mouse press)
+	private Color targetColor = Color.BLACK;          	// color of regions of interest (set by mouse press)
 	private Color paintColor = Color.blue;	// the color to put into the painting from the "brush"
 	private BufferedImage painting;			// the resulting masterpiece
 
@@ -52,6 +52,7 @@ public class CamPaint extends Webcam {
 				g.drawImage(painting, 0, 0, null);
 			}
 		}
+		//else System.out.println("it is null");
 
 	}
 
@@ -72,7 +73,6 @@ public class CamPaint extends Webcam {
 	public void processImage() {
 		// TODO: YOUR CODE HERE
 
-		if (image != null && targetColor != null) {
 			finder.setImage(image);
 			if (displayMode == 'r') {
 				finder.setRegions(new ArrayList<ArrayList<Point>>());
@@ -90,7 +90,6 @@ public class CamPaint extends Webcam {
 				finder.recolorImage();
 			}
 
-		}
 	}
 
 
@@ -101,6 +100,7 @@ public class CamPaint extends Webcam {
 	public void handleKeyPress(char k) {
 		if (k == 'p' || k == 'r' || k == 'w') { // display: painting, recolored image, or webcam
 			displayMode = k;
+			System.out.println("Key press is on '" +displayMode+ "'");
 		}
 		else if (k == 'c') { // clear
 			clearPainting();
