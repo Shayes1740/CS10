@@ -8,7 +8,6 @@
  * @author CBK, Spring 2016, cleaned up inner class, extended testing
  * @author Jacob Fyda, Dartmouth CS 10, Winter 2020
  */
-
 public class SinglyLinkedHT<T> implements SimpleList<T> {
     private Element head;	// front of the linked list
     private Element tail;	// end
@@ -115,26 +114,19 @@ public class SinglyLinkedHT<T> implements SimpleList<T> {
         if (size == 0 && other.size == 0) {
             System.out.println("both lists empty");
         }
-        if (size == 0 && other.size != 0) {
+        else if (size == 0 && other.size != 0) {
             head = other.head;
             tail = other.tail;
             size = other.size;
             System.out.println("first list empty");
         }
-        if (other.size == 0 && size != 0) {
+        else if (other.size == 0 && size != 0) {
             System.out.println("second list empty");
         }
         else {
-//            System.out.println(other.head);
-//            System.out.println(tail);
-//            System.out.println(other.tail);
-//            System.out.println(tail.next);
 
             tail.next = other.head;
-//            Element temp = tail;
-//            other.head = tail;
             tail = other.tail;
-//            temp.next = other.head;
             size = size + other.size;
         }
     }
