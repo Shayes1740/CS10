@@ -57,10 +57,13 @@ public class SinglyLinkedHT<T> implements SimpleList<T> {
         if (idx == 0) {
             // Insert at head
             head = new Element(item, head);
-        }
-        else if (idx == this.size) {
+            if (size == 0) {
+                tail = head;
+            }
+        }else if (idx == this.size) {
             // Insert at tail
-            tail = new Element(item, tail);
+            tail.next = new Element(item, tail.next);
+            tail = tail.next;
 
         }
         else {
@@ -112,13 +115,13 @@ public class SinglyLinkedHT<T> implements SimpleList<T> {
         if (size == 0 && other.size == 0) {
             System.out.println("both lists empty");
         }
-        if (size == 0) {
+        if (size == 0 && other.size != 0) {
             head = other.head;
             tail = other.tail;
             size = other.size;
             System.out.println("first list empty");
         }
-        if (other.size == 0) {
+        if (other.size == 0 && size != 0) {
             System.out.println("second list empty");
         }
         else {
@@ -127,10 +130,11 @@ public class SinglyLinkedHT<T> implements SimpleList<T> {
 //            System.out.println(other.tail);
 //            System.out.println(tail.next);
 
-            Element temp = tail;
+            tail.next = other.head;
+//            Element temp = tail;
 //            other.head = tail;
             tail = other.tail;
-            temp.next = other.head;
+//            temp.next = other.head;
             size = size + other.size;
         }
     }
