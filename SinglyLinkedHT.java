@@ -79,6 +79,7 @@ public class SinglyLinkedHT<T> implements SimpleList<T> {
             // Just pop off the head
             if (head == null) throw new Exception("invalid index");
             head = head.next;
+            if (size == 0) { tail = null; }
         }
         else if (idx == this.size) {
             // Just pop off the tail
@@ -92,6 +93,7 @@ public class SinglyLinkedHT<T> implements SimpleList<T> {
             if (e.next == null) throw new Exception("invalid index");
             // Splice it out
             e.next = e.next.next;
+            if (e.next == null) { tail = e; }
         }
         size--;
     }
