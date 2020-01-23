@@ -7,13 +7,13 @@ import javax.swing.*;
 /**
  * Webcam-based drawing 
  * Scaffold for PS-1, Dartmouth CS 10, Fall 2016
- * 
+ *
  * @author Chris Bailey-Kellogg, Spring 2015 (based on a different webcam app from previous terms)
  */
 public class CamPaint extends Webcam {
 	private char displayMode = 'w';			// what to display: 'w': live webcam, 'r': recolored image, 'p': painting
 	private RegionFinder finder;			// handles the finding
-	private Color targetColor = Color.BLACK;          	// color of regions of interest (set by mouse press)
+	private Color targetColor;          	// color of regions of interest (set by mouse press)
 	private Color paintColor = Color.blue;	// the color to put into the painting from the "brush"
 	private BufferedImage painting;			// the resulting masterpiece
 
@@ -33,7 +33,7 @@ public class CamPaint extends Webcam {
 	}
 
 	/**
-	 * DrawingGUI method, here drawing one of live webcam, recolored image, or painting, 
+	 * DrawingGUI method, here drawing one of live webcam, recolored image, or painting,
 	 * depending on display variable ('w', 'r', or 'p')
 	 */
 	@Override
@@ -62,8 +62,8 @@ public class CamPaint extends Webcam {
 	@Override
 	public void handleMousePress(int x, int y) {
 		// TODO: YOUR CODE HERE
-			targetColor = new Color(image.getRGB(x, y));
-			System.out.println("tracking " + targetColor);
+		targetColor = new Color(image.getRGB(x, y));
+		System.out.println("tracking " + targetColor);
 	}
 
 	/**
@@ -72,24 +72,23 @@ public class CamPaint extends Webcam {
 	@Override
 	public void processImage() {
 		// TODO: YOUR CODE HERE
+		if (targetColor != null){
 
 			finder.setImage(image);
-			if (displayMode == 'r') {
-				finder.setRegions(new ArrayList<ArrayList<Point>>());
-			}
+			finder.setRegions(new ArrayList<ArrayList<Point>>());
 			finder.findRegions(targetColor);
-			if (displayMode == 'p') {
-				ArrayList<Point> finalRegion = finder.largestRegion();
-				for (Point points : finalRegion) {
-					if (painting.getRGB(points.x, points.y) != paintColor.getRGB()){
-						painting.setRGB(points.x, points.y, paintColor.getRGB());
-					}
+
+			ArrayList<Point> finalRegion = finder.largestRegion();
+			for (Point points : finalRegion) {
+				if (painting.getRGB(points.x, points.y) != paintColor.getRGB()){
+					painting.setRGB(points.x, points.y, paintColor.getRGB());
 				}
 			}
-			else if (displayMode == 'r') {
-				finder.recolorImage();
-			}
 
+
+			finder.recolorImage();
+
+		}
 	}
 
 
