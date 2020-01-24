@@ -12,7 +12,7 @@ import java.util.*;
  * @author CBK, Spring 2015, updated for CamPaint
  */
 public class RegionFinder {
-	private static final int maxColorDiff = 500;            // how similar a pixel color must be to the target color, to belong to a region
+	private static final int maxColorDiff = 200;            // how similar a pixel color must be to the target color, to belong to a region
 	private static final int minRegion = 50;                // how many points in a region to be worth considering
 	private static final int radius = 1;
 
@@ -69,9 +69,8 @@ public class RegionFinder {
 					if (visited.getRGB(nx, ny) == 0 && colorMatch(checkedColor, targetColor)){
 						for (int b = Math.max(0, ny - radius); b < Math.min(image.getHeight(), ny + radius + 1); b++) {
 							for (int a = Math.max(0, nx - radius); a < Math.min(image.getWidth(), nx + radius + 1); a++) {
-								if (a != nx && b != ny) {
-									toVisit.add(new Point(a, b));
-								}
+								toVisit.add(new Point(a, b));
+
 							}
 						}
 
