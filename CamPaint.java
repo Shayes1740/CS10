@@ -38,7 +38,6 @@ public class CamPaint extends Webcam {
 	 */
 	@Override
 	public void draw(Graphics g) {
-		// TODO: YOUR CODE HERE
 
 		if (image != null){
 			processImage();
@@ -61,7 +60,6 @@ public class CamPaint extends Webcam {
 	 */
 	@Override
 	public void handleMousePress(int x, int y) {
-		// TODO: YOUR CODE HERE
 		targetColor = new Color(image.getRGB(x, y));
 		System.out.println("tracking " + targetColor);
 	}
@@ -71,11 +69,9 @@ public class CamPaint extends Webcam {
 	 */
 	@Override
 	public void processImage() {
-		// TODO: YOUR CODE HERE
 		if (targetColor != null){
 
 			finder.setImage(image);
-			finder.setRegions(new ArrayList<ArrayList<Point>>());
 			finder.findRegions(targetColor);
 
 			ArrayList<Point> finalRegion = finder.largestRegion();
