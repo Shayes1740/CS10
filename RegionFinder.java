@@ -19,7 +19,7 @@ public class RegionFinder {
 	private BufferedImage image;                            // the image in which to find regions
 	private BufferedImage recoloredImage;                   // the image with identified regions recolored
 
-	private ArrayList<ArrayList<Point>> regions = new ArrayList<ArrayList<Point>>();;            // a region is a list of points
+	private ArrayList<ArrayList<Point>> regions;            // a region is a list of points
 	// so the identified regions are in a list of lists of points
 	private ArrayList<Point> innerRegion;
 	private ArrayList<Point> toVisit;
@@ -37,10 +37,6 @@ public class RegionFinder {
 		this.image = image;
 	}
 
-	public void setRegions (ArrayList<ArrayList<Point>> regions){
-		this.regions = regions;
-	}
-
 	public BufferedImage getImage() {
 		return image;
 	}
@@ -53,9 +49,8 @@ public class RegionFinder {
 	 * Sets regions to the flood-fill regions in the image, similar enough to the trackColor.
 	 */
 	public void findRegions(Color targetColor) {
-		// TODO: YOUR CODE HERE
 		BufferedImage visited = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
+		regions = new ArrayList<ArrayList<Point>>();
 		for (int y = 0; y < image.getHeight(); y++) {
 			for (int x = 0; x < image.getWidth(); x++) {
 				innerRegion = new ArrayList<Point>();
@@ -67,20 +62,23 @@ public class RegionFinder {
 
 				while (toVisit.size() > 0) {
 
-					int nx = toVisit.get(0).x;
-					int ny = toVisit.get(0).y;
+					int nx = toVisit.get(toVisit.size()-1).x;
+					int ny = toVisit.get(toVisit.size()-1).y;
 
 					Color checkedColor = new Color(image.getRGB(nx, ny));
 					if (visited.getRGB(nx, ny) == 0 && colorMatch(checkedColor, targetColor)){
 						for (int b = Math.max(0, ny - radius); b < Math.min(image.getHeight(), ny + radius + 1); b++) {
 							for (int a = Math.max(0, nx - radius); a < Math.min(image.getWidth(), nx + radius + 1); a++) {
-								toVisit.add(new Point(a, b));
+								if (a != nx && b != ny) {
+									toVisit.add(new Point(a, b));
+								}
 							}
 						}
-						innerRegion.add(toVisit.get(0));
+
+						innerRegion.add(toVisit.get(toVisit.size()-1));
 					}
 					visited.setRGB(nx, ny, 1);
-					toVisit.remove(toVisit.get(0));
+					toVisit.remove(toVisit.get(toVisit.size()-1));
 
 				}
 				if (innerRegion.size() >= minRegion) {
@@ -95,7 +93,6 @@ public class RegionFinder {
 	 * Tests whether the two colors are "similar enough" (your definition, subject to the maxColorDiff threshold, which you can vary).
 	 */
 	private static boolean colorMatch (Color c1, Color c2) {
-		// TODO: YOUR CODE HERE
 		int diff = (c1.getRed() - c2.getRed()) * (c1.getRed() - c2.getRed())
 				+ (c1.getGreen() - c2.getGreen()) * (c1.getGreen() - c2.getGreen())
 				+ (c1.getBlue() - c2.getBlue()) * (c1.getBlue() - c2.getBlue());
@@ -106,7 +103,6 @@ public class RegionFinder {
 	 * Returns the largest region detected (if any region has been detected)
 	 */
 	public ArrayList<Point> largestRegion() {
-		// TODO: YOUR CODE HERE
 		ArrayList<Point> largestOutThere = new ArrayList<Point>();
 		for(ArrayList<Point> region: regions){
 			if (region.size() > largestOutThere.size()){
@@ -126,7 +122,6 @@ public class RegionFinder {
 		try {
 			recoloredImage = new BufferedImage(image.getColorModel(), image.copyData(null), image.getColorModel().isAlphaPremultiplied(), null);
 			// Now recolor the regions in it
-			// TODO: YOUR CODE HERE
 			int maxColorValue = 16777216;
 			int chosenColor;
 
