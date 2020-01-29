@@ -50,10 +50,14 @@ public class DotTreeGUI extends DrawingGUI {
 		if (mode == 'a') {
 			// Add a new dot at the point
 			// TODO: YOUR CODE HERE
+			Dot dot = new Dot(x,y);
+			tree.insert(dot);
+
 		}
 		else if (mode == 'q') {
 			// Set "found" to what tree says is near the mouse press
 			// TODO: YOUR CODE HERE
+			found = tree.findInCircle(x, y, mouseRadius);
 		}
 		else {
 			System.out.println("clicked at "+x+","+y);

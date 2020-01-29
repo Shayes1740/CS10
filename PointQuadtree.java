@@ -1,14 +1,17 @@
+
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A point quadtree: stores an element at a 2D position, 
+ * A point quadtree: stores an element at a 2D position,
  * with children at the subdivided quadrants
- * 
+ *
  * @author Chris Bailey-Kellogg, Dartmouth CS 10, Spring 2015
  * @author CBK, Spring 2016, explicit rectangle
  * @author CBK, Fall 2016, generic with Point2D interface
- * 
+ *
  */
 public class PointQuadtree<E extends Point2D> {
 	private E point;							// the point anchoring this node
@@ -25,7 +28,7 @@ public class PointQuadtree<E extends Point2D> {
 	}
 
 	// Getters
-	
+
 	public E getPoint() {
 		return point;
 	}
@@ -74,33 +77,37 @@ public class PointQuadtree<E extends Point2D> {
 		if ((point.getX() < p2.getX()) && (point.getY() < p2.getY())) {
 			if (c4 != null) { //meaning there is a child
 				c4.insert(p2);
-			} else {
+			}
+			else {
 				c4 = new PointQuadtree<>(p2, (int) p2.getX(), (int) p2.getY(), x2, y2);
 			}
 		}
 		else if ((point.getX() > p2.getX()) && (point.getY() < p2.getY())){
 			if (c3 != null) { //meaning there is a child
 				c3.insert(p2);
-			} else {
+			}
+			else {
 				c3 = new PointQuadtree<>(p2, (int) p2.getX(), (int) p2.getY(), x2, y2);
 			}
 		}
 		else if ((point.getX() < p2.getX()) && (point.getY() > p2.getY())){
 			if (c1 != null) { //meaning there is a child
 				c1.insert(p2);
-			} else {
+			}
+			else {
 				c1 = new PointQuadtree<>(p2, (int) p2.getX(), (int) p2.getY(), x2, y2);
 			}
 		}
 		else if ((point.getX() > p2.getX()) && (point.getY() > p2.getY())){
 			if (c2 != null) { //meaning there is a child
 				c2.insert(p2);
-			} else {
+			}
+			else {
 				c2 = new PointQuadtree<>(p2, (int) p2.getX(), (int) p2.getY(), x2, y2);
 			}
 		}
 	}
-	
+
 	/**
 	 * Finds the number of points in the quadtree (including its descendants)
 	 */
@@ -121,7 +128,7 @@ public class PointQuadtree<E extends Point2D> {
 		}
 		return points;
 	}
-	
+
 	/**
 	 * Builds a list of all the points in the quadtree (including its descendants)
 	 */
@@ -141,11 +148,45 @@ public class PointQuadtree<E extends Point2D> {
 	 */
 	public List<E> findInCircle(double cx, double cy, double cr) {
 		// TODO: YOUR CODE HERE
+		ArrayList<E> pointsInCircle = new ArrayList<>();
+		helpFindInCircle(pointsInCircle, cx, cy, cr);
+		return pointsInCircle;
 	}
 
 //	 TODO: YOUR CODE HERE for any helper methods
 	private void addToListOfPoints(ArrayList<E> allPoints){
 		allPoints.add(point);
+		if (hasChild(1)) {
+			getChild(1).addToListOfPoints(allPoints);
+		}
+		else if (hasChild(2)) {
+			getChild(2).addToListOfPoints(allPoints);
+		}
+		else if (hasChild(3)) {
+			getChild(3).addToListOfPoints(allPoints);
+		}
+		else if (hasChild(4)) {
+			getChild(4).addToListOfPoints(allPoints);
+		}
+	}
 
+	private void helpFindInCircle(ArrayList<E> pointsInCircle, double cx, double cy, double cr){
+		if (Geometry.circleIntersectsRectangle(cx, cy, cr, x1, y1, x2, y2)){
+			if(Geometry.pointInCircle(point.getX(), point.getY(), cx, cy, cr)) {
+				pointsInCircle.add(point);
+				if (hasChild(1)) {
+					getChild(1).helpFindInCircle(pointsInCircle, cx, cy, cr);
+				}
+				if (hasChild(2)) {
+					getChild(2).helpFindInCircle(pointsInCircle, cx, cy, cr);
+				}
+				if (hasChild(3)) {
+					getChild(3).helpFindInCircle(pointsInCircle, cx, cy, cr);
+				}
+				if (hasChild(4)) {
+					getChild(4).helpFindInCircle(pointsInCircle, cx, cy, cr);
+				}
+			}
+		}
 	}
 }
