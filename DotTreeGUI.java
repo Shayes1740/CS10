@@ -6,7 +6,7 @@ import javax.swing.*;
 /**
  * Driver for interacting with a quadtree:
  * inserting points, viewing the tree, and finding points near a mouse press
- * 
+ *
  * @author Chris Bailey-Kellogg, Dartmouth CS 10, Spring 2015
  * @author CBK, Spring 2016, updated for dots
  * @author CBK, Fall 2016, generics, dots, extended testing
@@ -15,7 +15,7 @@ public class DotTreeGUI extends DrawingGUI {
 	private static final int width=800, height=600;		// size of the universe
 	private static final int dotRadius = 5;				// to draw dot, so it's visible
 	private static final Color[] rainbow = {Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, Color.MAGENTA};
-			// to color different levels differently
+	// to color different levels differently
 
 	private PointQuadtree<Dot> tree = null;			// holds the dots
 	private char mode = 'a';						// 'a': adding; 'q': querying with the mouse
@@ -23,7 +23,7 @@ public class DotTreeGUI extends DrawingGUI {
 	private int mouseRadius = 10;					// circle around mouse location, for querying
 	private boolean trackMouse = false;				// if true, then print out where the mouse is as it moves
 	private List<Dot> found = null;					// who was found near mouse, when querying
-	
+
 	public DotTreeGUI() {
 		super("dottree", width, height);
 	}
@@ -64,7 +64,7 @@ public class DotTreeGUI extends DrawingGUI {
 		}
 		repaint();
 	}
-	
+
 	/**
 	 * A simple testing procedure, making sure actual is expected, and printing a message if not
 	 * @param x		query x coordinate
@@ -95,7 +95,7 @@ public class DotTreeGUI extends DrawingGUI {
 		}
 		return errs;
 	}
-	
+
 	/**
 	 * test tree 0 -- first three points from figure in handout
 	 * hardcoded point locations for 800x600
@@ -170,7 +170,7 @@ public class DotTreeGUI extends DrawingGUI {
 
 		repaint();
 	}
-	
+
 	/**
 	 * DrawingGUI method, here drawing the quadtree
 	 * and if in query mode, the mouse location and any found dots
@@ -180,7 +180,7 @@ public class DotTreeGUI extends DrawingGUI {
 		if (tree != null) drawTree(g, tree, 0);
 		if (mode == 'q') {
 			g.setColor(Color.BLACK);
-			g.drawOval(mouseX-mouseRadius, mouseY-mouseRadius, 2*mouseRadius, 2*mouseRadius);			
+			g.drawOval(mouseX-mouseRadius, mouseY-mouseRadius, 2*mouseRadius, 2*mouseRadius);
 			if (found != null) {
 				g.setColor(Color.BLACK);
 				for (Dot d : found) {
@@ -201,9 +201,23 @@ public class DotTreeGUI extends DrawingGUI {
 		g.setColor(rainbow[level % rainbow.length]);
 		// Draw this node's dot and lines through it
 		// TODO: YOUR CODE HERE
-
+		g.drawOval((int)(tree.getPoint().getX()-dotRadius), (int)(tree.getPoint().getY()-dotRadius), (2*dotRadius), (2*dotRadius));
+		g.drawLine((int)(tree.getPoint().getX()), tree.getY1(), (int)(tree.getPoint().getX()), tree.getY2());
+		g.drawLine(tree.getX1(), (int)(tree.getPoint().getY()), tree.getX1(), (int)(tree.getPoint().getY()));
 		// Recurse with children
 		// TODO: YOUR CODE HERE
+		if (tree.hasChild(1)){
+			drawTree(g, tree.getChild(1), level + 1);
+		}
+		if (tree.hasChild(2)){
+			drawTree(g, tree.getChild(2), level + 1);
+		}
+		if (tree.hasChild(3)){
+			drawTree(g, tree.getChild(3), level + 1);
+		}
+		if (tree.hasChild(4)){
+			drawTree(g, tree.getChild(4), level + 1);
+		}
 	}
 
 	public static void main(String[] args) {
