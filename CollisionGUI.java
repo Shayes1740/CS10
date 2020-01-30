@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 /**
  * Using a quadtree for collision detection
- * 
+ *
  * @author Chris Bailey-Kellogg, Dartmouth CS 10, Spring 2015
  * @author CBK, Spring 2016, updated for blobs
  * @author CBK, Fall 2016, using generic PointQuadtree
@@ -18,6 +18,8 @@ public class CollisionGUI extends DrawingGUI {
 	private PointQuadtree<Blob> tree;
 	private List<Blob> blobs;						// all the blobs
 	private List<Blob> colliders;					// the blobs who collided at this step
+	private List<Blob> threats;
+
 	private char blobType = 'b';						// what type of blob to create
 	private char collisionHandler = 'c';				// when there's a collision, 'c'olor them, or 'd'estroy them
 	private int delay = 100;							// timer control
@@ -72,14 +74,14 @@ public class CollisionGUI extends DrawingGUI {
 			for (int i=0; i<10; i++) {
 				add((int)(width*Math.random()), (int)(height*Math.random()));
 				repaint();
-			}			
+			}
 		}
 		else if (k == 'c' || k == 'd') { // control how collisions are handled
 			collisionHandler = k;
 			System.out.println("collision:"+k);
 		}
 		else { // set the type for new blobs
-			blobType = k;			
+			blobType = k;
 		}
 	}
 
@@ -93,9 +95,11 @@ public class CollisionGUI extends DrawingGUI {
 			blob.draw(g);
 		}
 		// Ask the colliders to draw themselves in red.
-		for (Blob collider : colliders) {
+		if (colliders != null) {
 			g.setColor(Color.RED);
-			collider.draw(g);
+			for (Blob collider : colliders) {
+				collider.draw(g);
+			}
 		}
 	}
 
@@ -105,12 +109,25 @@ public class CollisionGUI extends DrawingGUI {
 	private void findColliders() {
 		// TODO: YOUR CODE HERE
 		// Create the tree
-		tree = new PointQuadtree<Blob>(blobs.get(0), 0,0,800,600);
+		tree = new PointQuadtree<Blob>(new Blob(blobs.get(0).getX(), blobs.get(0).getY()), 0,0, width, height);
+		colliders = new ArrayList<>();
+		threats = new ArrayList<>();
+
+
 		for (int i = 0; i < blobs.size(); i++){
-			tree.insert(blobs.get(i));
+			tree.insert(new Blob(blobs.get(i).getX(), blobs.get(i).getY()));
 		}
 		// For each blob, see if anybody else collided with it
+		for (Blob blob: blobs){
+			double x = blob.getX();
+			double y = blob.getY();
+			double r = blob.getR();
 
+			threats = tree.findInCircle(x,y,r);
+			if (threats.size() > 0){
+				colliders.add(blob);
+			}
+		}
 	}
 
 	/**
