@@ -74,36 +74,42 @@ public class PointQuadtree<E extends Point2D> {
 	 */
 	public void insert(E p2) {
 		// TODO: YOUR CODE HERE
-		if ((point.getX() < p2.getX()) && (point.getY() < p2.getY())) {
+		int x = (int) point.getX();
+		int y = (int) point.getY();
+
+		int xnew = (int) p2.getX();
+		int ynew = (int) p2.getY();
+
+		if ((x < xnew) && (y < ynew)) {
 			if (c4 != null) { //meaning there is a child
 				c4.insert(p2);
 			}
 			else {
-				c4 = new PointQuadtree<>(p2, (int) p2.getX(), (int) p2.getY(), x2, y2);
+				c4 = new PointQuadtree<>(p2, xnew, ynew, x2, y2);
 			}
 		}
-		else if ((point.getX() > p2.getX()) && (point.getY() < p2.getY())){
+		else if ((x > xnew) && (y < ynew)){
 			if (c3 != null) { //meaning there is a child
 				c3.insert(p2);
 			}
 			else {
-				c3 = new PointQuadtree<>(p2, x1, (int) p2.getY(), (int) p2.getX(), y2);
+				c3 = new PointQuadtree<>(p2, x1, ynew, xnew, y2);
 			}
 		}
-		else if ((point.getX() < p2.getX()) && (point.getY() > p2.getY())){
+		else if ((x < xnew) && (y > ynew)){
 			if (c1 != null) { //meaning there is a child
 				c1.insert(p2);
 			}
 			else {
-				c1 = new PointQuadtree<>(p2, (int) p2.getX(), y1, x2, (int) p2.getY());
+				c1 = new PointQuadtree<>(p2, xnew, y1, x2, ynew);
 			}
 		}
-		else if ((point.getX() > p2.getX()) && (point.getY() > p2.getY())){
+		else if ((x > xnew) && (y > ynew)){
 			if (c2 != null) { //meaning there is a child
 				c2.insert(p2);
 			}
 			else {
-				c2 = new PointQuadtree<>(p2, x1, y1, (int) p2.getX(), (int) p2.getY());
+				c2 = new PointQuadtree<>(p2, x1, y1, xnew, ynew);
 			}
 		}
 	}
@@ -142,7 +148,7 @@ public class PointQuadtree<E extends Point2D> {
 	//	 TODO: YOUR CODE HERE for any helper methods
 	private void addToListOfPoints(ArrayList<E> allPoints){
 		allPoints.add(point);
-		for(int i = 0; i < 5; i++){
+		for(int i = 1; i < 5; i++){
 			if (hasChild(i)) {
 				getChild(i).addToListOfPoints(allPoints);
 			}
@@ -170,7 +176,7 @@ public class PointQuadtree<E extends Point2D> {
 			if (Geometry.pointInCircle(point.getX(), point.getY(), cx, cy, cr)) {
 				pointsInCircle.add(point);
 			}
-			for (int i = 0; i < 5; i++) {
+			for (int i = 1; i < 5; i++) {
 				if (hasChild(i)) {
 					getChild(i).helpFindInCircle(pointsInCircle, cx, cy, cr);
 				}
