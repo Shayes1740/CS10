@@ -1,6 +1,4 @@
 
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +83,7 @@ public class PointQuadtree<E extends Point2D> {
 				c4.insert(p2);
 			}
 			else {
-				c4 = new PointQuadtree<>(p2, xnew, ynew, x2, y2);
+				c4 = new PointQuadtree<>(p2, x, y, x2, y2);
 			}
 		}
 		else if ((x > xnew) && (y < ynew)){
@@ -93,7 +91,7 @@ public class PointQuadtree<E extends Point2D> {
 				c3.insert(p2);
 			}
 			else {
-				c3 = new PointQuadtree<>(p2, x1, ynew, xnew, y2);
+				c3 = new PointQuadtree<>(p2, x1, y, x, y2);
 			}
 		}
 		else if ((x < xnew) && (y > ynew)){
@@ -101,7 +99,7 @@ public class PointQuadtree<E extends Point2D> {
 				c1.insert(p2);
 			}
 			else {
-				c1 = new PointQuadtree<>(p2, xnew, y1, x2, ynew);
+				c1 = new PointQuadtree<>(p2, x, y1, x2, y);
 			}
 		}
 		else if ((x > xnew) && (y > ynew)){
@@ -109,7 +107,7 @@ public class PointQuadtree<E extends Point2D> {
 				c2.insert(p2);
 			}
 			else {
-				c2 = new PointQuadtree<>(p2, x1, y1, xnew, ynew);
+				c2 = new PointQuadtree<>(p2, x1, y1, x, y);
 			}
 		}
 	}
@@ -146,11 +144,11 @@ public class PointQuadtree<E extends Point2D> {
 	}
 
 	//	 TODO: YOUR CODE HERE for any helper methods
-	private void addToListOfPoints(ArrayList<E> allPoints){
-		allPoints.add(point);
+	private void addToListOfPoints(ArrayList<E> listOfPoints){
+		listOfPoints.add(point);
 		for(int i = 1; i < 5; i++){
 			if (hasChild(i)) {
-				getChild(i).addToListOfPoints(allPoints);
+				getChild(i).addToListOfPoints(listOfPoints);
 			}
 		}
 
