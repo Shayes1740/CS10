@@ -87,7 +87,7 @@ public class PointQuadtree<E extends Point2D> {
 				c3.insert(p2);
 			}
 			else {
-				c3 = new PointQuadtree<>(p2, (int) p2.getX(), (int) p2.getY(), x2, y2);
+				c3 = new PointQuadtree<>(p2, x1, (int) p2.getY(), (int) p2.getX(), y2);
 			}
 		}
 		else if ((point.getX() < p2.getX()) && (point.getY() > p2.getY())){
@@ -95,7 +95,7 @@ public class PointQuadtree<E extends Point2D> {
 				c1.insert(p2);
 			}
 			else {
-				c1 = new PointQuadtree<>(p2, (int) p2.getX(), (int) p2.getY(), x2, y2);
+				c1 = new PointQuadtree<>(p2, (int) p2.getX(), y1, x2, (int) p2.getY());
 			}
 		}
 		else if ((point.getX() > p2.getX()) && (point.getY() > p2.getY())){
@@ -103,7 +103,7 @@ public class PointQuadtree<E extends Point2D> {
 				c2.insert(p2);
 			}
 			else {
-				c2 = new PointQuadtree<>(p2, (int) p2.getX(), (int) p2.getY(), x2, y2);
+				c2 = new PointQuadtree<>(p2, x1, y1, (int) p2.getX(), (int) p2.getY());
 			}
 		}
 	}
@@ -135,8 +135,20 @@ public class PointQuadtree<E extends Point2D> {
 	public List<E> allPoints() {
 		// TODO: YOUR CODE HERE;
 		ArrayList<E> listOfPoints = new ArrayList<>();
+
 		addToListOfPoints(listOfPoints);
 		return listOfPoints;
+	}
+
+	//	 TODO: YOUR CODE HERE for any helper methods
+	private void addToListOfPoints(ArrayList<E> allPoints){
+		allPoints.add(point);
+		for(int i = 0; i < 5; i++){
+			if (hasChild(i)) {
+				getChild(i).addToListOfPoints(allPoints);
+			}
+		}
+
 	}
 
 	/**
@@ -153,38 +165,15 @@ public class PointQuadtree<E extends Point2D> {
 		return pointsInCircle;
 	}
 
-//	 TODO: YOUR CODE HERE for any helper methods
-	private void addToListOfPoints(ArrayList<E> allPoints){
-		allPoints.add(point);
-		if (hasChild(1)) {
-			getChild(1).addToListOfPoints(allPoints);
-		}
-		else if (hasChild(2)) {
-			getChild(2).addToListOfPoints(allPoints);
-		}
-		else if (hasChild(3)) {
-			getChild(3).addToListOfPoints(allPoints);
-		}
-		else if (hasChild(4)) {
-			getChild(4).addToListOfPoints(allPoints);
-		}
-	}
 
 	private void helpFindInCircle(ArrayList<E> pointsInCircle, double cx, double cy, double cr){
 		if (Geometry.circleIntersectsRectangle(cx, cy, cr, x1, y1, x2, y2)){
 			if(Geometry.pointInCircle(point.getX(), point.getY(), cx, cy, cr)) {
 				pointsInCircle.add(point);
-				if (hasChild(1)) {
-					getChild(1).helpFindInCircle(pointsInCircle, cx, cy, cr);
-				}
-				if (hasChild(2)) {
-					getChild(2).helpFindInCircle(pointsInCircle, cx, cy, cr);
-				}
-				if (hasChild(3)) {
-					getChild(3).helpFindInCircle(pointsInCircle, cx, cy, cr);
-				}
-				if (hasChild(4)) {
-					getChild(4).helpFindInCircle(pointsInCircle, cx, cy, cr);
+				for (int i = 0; i < 5; i++) {
+					if (hasChild(i)) {
+						getChild(i).helpFindInCircle(pointsInCircle, cx, cy, cr);
+					}
 				}
 			}
 		}
