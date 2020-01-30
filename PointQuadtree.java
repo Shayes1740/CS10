@@ -135,7 +135,6 @@ public class PointQuadtree<E extends Point2D> {
 	public List<E> allPoints() {
 		// TODO: YOUR CODE HERE;
 		ArrayList<E> listOfPoints = new ArrayList<>();
-
 		addToListOfPoints(listOfPoints);
 		return listOfPoints;
 	}
@@ -168,12 +167,12 @@ public class PointQuadtree<E extends Point2D> {
 
 	private void helpFindInCircle(ArrayList<E> pointsInCircle, double cx, double cy, double cr){
 		if (Geometry.circleIntersectsRectangle(cx, cy, cr, x1, y1, x2, y2)){
-			if(Geometry.pointInCircle(point.getX(), point.getY(), cx, cy, cr)) {
+			if (Geometry.pointInCircle(point.getX(), point.getY(), cx, cy, cr)) {
 				pointsInCircle.add(point);
-				for (int i = 0; i < 5; i++) {
-					if (hasChild(i)) {
-						getChild(i).helpFindInCircle(pointsInCircle, cx, cy, cr);
-					}
+			}
+			for (int i = 0; i < 5; i++) {
+				if (hasChild(i)) {
+					getChild(i).helpFindInCircle(pointsInCircle, cx, cy, cr);
 				}
 			}
 		}
