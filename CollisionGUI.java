@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class CollisionGUI extends DrawingGUI {
 	private static final int width=800, height=600;		// size of the universe
 
+	private PointQuadtree<Blob> tree;
 	private List<Blob> blobs;						// all the blobs
 	private List<Blob> colliders;					// the blobs who collided at this step
 	private char blobType = 'b';						// what type of blob to create
@@ -104,7 +105,12 @@ public class CollisionGUI extends DrawingGUI {
 	private void findColliders() {
 		// TODO: YOUR CODE HERE
 		// Create the tree
+		tree = new PointQuadtree<Blob>(blobs.get(0), 0,0,800,600);
+		for (int i = 0; i < blobs.size(); i++){
+			tree.insert(blobs.get(i));
+		}
 		// For each blob, see if anybody else collided with it
+
 	}
 
 	/**

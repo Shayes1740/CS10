@@ -47,20 +47,21 @@ public class DotTreeGUI extends DrawingGUI {
 	 */
 	@Override
 	public void handleMousePress(int x, int y) {
-		if (mode == 'a') {
-			// Add a new dot at the point
-			// TODO: YOUR CODE HERE
-			Dot dot = new Dot(x,y);
-			tree.insert(dot);
-
-		}
-		else if (mode == 'q') {
-			// Set "found" to what tree says is near the mouse press
-			// TODO: YOUR CODE HERE
-			found = tree.findInCircle(x, y, mouseRadius);
+		if (tree == null){
+			tree = new PointQuadtree<Dot>(new Dot(x,y), 0,0,800,600);
 		}
 		else {
-			System.out.println("clicked at "+x+","+y);
+			if (mode == 'a') {
+				// Add a new dot at the point
+				// TODO: YOUR CODE HERE
+				tree.insert(new Dot(x, y));
+			} else if (mode == 'q') {
+				// Set "found" to what tree says is near the mouse press
+				// TODO: YOUR CODE HERE
+				found = tree.findInCircle(x, y, mouseRadius);
+			} else {
+				System.out.println("clicked at " + x + "," + y);
+			}
 		}
 		repaint();
 	}
@@ -202,21 +203,15 @@ public class DotTreeGUI extends DrawingGUI {
 		// Draw this node's dot and lines through it
 		// TODO: YOUR CODE HERE
 		g.drawOval((int)(tree.getPoint().getX()-dotRadius), (int)(tree.getPoint().getY()-dotRadius), (2*dotRadius), (2*dotRadius));
+		g.fillOval((int)(tree.getPoint().getX()-dotRadius), (int)(tree.getPoint().getY()-dotRadius), (2*dotRadius), (2*dotRadius));
 		g.drawLine((int)(tree.getPoint().getX()), tree.getY1(), (int)(tree.getPoint().getX()), tree.getY2());
-		g.drawLine(tree.getX1(), (int)(tree.getPoint().getY()), tree.getX1(), (int)(tree.getPoint().getY()));
+		g.drawLine(tree.getX1(), (int)(tree.getPoint().getY()), tree.getX2(), (int)(tree.getPoint().getY()));
 		// Recurse with children
 		// TODO: YOUR CODE HERE
-		if (tree.hasChild(1)){
-			drawTree(g, tree.getChild(1), level + 1);
-		}
-		if (tree.hasChild(2)){
-			drawTree(g, tree.getChild(2), level + 1);
-		}
-		if (tree.hasChild(3)){
-			drawTree(g, tree.getChild(3), level + 1);
-		}
-		if (tree.hasChild(4)){
-			drawTree(g, tree.getChild(4), level + 1);
+		for (int i = 1; i <5; i++) {
+			if (tree.hasChild(i)) {
+				drawTree(g, tree.getChild(i), level + 1);
+			}
 		}
 	}
 
