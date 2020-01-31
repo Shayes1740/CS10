@@ -96,7 +96,7 @@ public class CollisionGUI extends DrawingGUI {
 		}
 		// Ask the colliders to draw themselves in red.
 		if (colliders != null) {
-			g.setColor(Color.RED);
+			g.setColor(Color.orange);
 			for (Blob collider : colliders) {
 				collider.draw(g);
 			}
@@ -123,8 +123,8 @@ public class CollisionGUI extends DrawingGUI {
 			double y = blob.getY();
 			double r = blob.getR();
 
-			threats = tree.findInCircle(x,y,r);
-			if (threats.size() > 0){
+			threats = tree.findInCircle(x,y, 2*r);
+			if (threats.size() > 1){
 				colliders.add(blob);
 			}
 		}
