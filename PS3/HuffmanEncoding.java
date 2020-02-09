@@ -12,7 +12,10 @@ public class HuffmanEncoding {
 
 
 
-
+    /**
+     * frequencyTable() generates a map that maps each character in a document to the number of times it appears
+     * in the document.
+     */
     public Map <Character, Integer> frequencyTable () {
         String test = "We won't go to all that trouble here.  This string contains multiple words. And multiple copies of multiple words.  And multiple words with multiple copies";
         Map<Character,Integer> wordCounts = new TreeMap<Character,Integer>();
@@ -49,13 +52,28 @@ public class HuffmanEncoding {
                 }
             }
             return wordCounts;
-
     }
 
+    /**
+     * Priority queue
+     */
+
+    /**
+     * Code retrieval
+     */
+
+
+    /**
+     * Compression
+     */
+
+
+    /**
+     * Decompression
+     */
+
     public static void main(String[] args) {
-        HuffmanEncoding test = new HuffmanEncoding(pathName);
-        Character tester = new Character('a');
-        System.out.println(test.frequencyMap.get(tester));
+
     }
 
 }
