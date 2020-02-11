@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
@@ -117,7 +116,7 @@ public class HuffmanEncoding {
 
     public void compress (Map<Character, String> map) throws IOException{
         BufferedReader input = new BufferedReader(new FileReader(fileName));
-        BufferedBitWriter bitOutput = new BufferedBitWriter("file_compressed.txt");
+        BufferedBitWriter bitOutput = new BufferedBitWriter(fileName.substring(0, fileName.indexOf('.')) + "_compressed.txt");
         int current = input.read();
         while (current != -1){
             String data = map.get((char) current);
@@ -142,21 +141,50 @@ public class HuffmanEncoding {
      */
 
     public void decompress (TreeData tree) throws IOException{
-        BufferedWriter output = new BufferedWriter(new FileWriter("file_decompressed.txt"));
-        BufferedBitReader bitInput = new BufferedBitReader("file_compressed.txt");
+        BufferedWriter output = new BufferedWriter(new FileWriter(fileName.substring(0, fileName.indexOf('.')) + "_decompressed.txt"));
+        BufferedBitReader bitInput = new BufferedBitReader(fileName.substring(0, fileName.indexOf('.')) + "_compressed.txt");
+        TreeData copyTree = tree;
 
-        while (bitInput.hasNext()) {
-            TreeData copyTree = tree;
-            boolean bit = bitInput.readBit();
-            while (!tree.isLeaf()){
-                if (bit == true){
-                    copyTree = tree.getRight();
+        if (copyTree == null) throw new IOException();
+
+        else if (copyTree != null && copyTree.isLeaf()){
+            while (bitInput.hasNext()) {
+                boolean bit = bitInput.readBit();
+                output.write(copyTree.getKey());
+                copyTree = tree;
+            }
+        }
+
+        else if (copyTree != null && !copyTree.isLeaf()) {
+            while (bitInput.hasNext()) {
+                if (copyTree.isLeaf()){
+                    output.write(copyTree.getKey());
+                    copyTree = tree;
                 }
                 else {
-                    copyTree = tree.getLeft();
+                    boolean bit = bitInput.readBit();
+                    if (bit == true) {
+                        copyTree = copyTree.getRight();
+                    } else {
+                        copyTree = copyTree.getLeft();
+                    }
+                }
+            }
+            if (copyTree.isLeaf()){
+                output.write(copyTree.getKey());
+                copyTree = tree;
+            }
+            else {
+                boolean bit = bitInput.readBit();
+                if (bit == true) {
+                    copyTree = copyTree.getRight();
+                } else {
+                    copyTree = copyTree.getLeft();
                 }
             }
         }
+        output.close();
+        bitInput.close();
     }
 
 
