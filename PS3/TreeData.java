@@ -43,6 +43,15 @@ public class TreeData {
     }
 
     /**
+     * Getters for left and right
+     */
+
+    public TreeData getLeft() {return this.left;}
+
+    public TreeData getRight() {return this.right;}
+
+
+    /**
      * Does it have a right child?
      */
     public boolean hasRight() {

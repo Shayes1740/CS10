@@ -87,27 +87,44 @@ public class HuffmanEncoding {
      * Code retrieval
      */
 
-//    public Map<Character, Integer> codeTree () {
-//        TreeData characterTree = priorityQueue().poll();
-//
-//
-//        return;
+    public Map<Character, String> codeTree () {
+        TreeData characterTree = priorityQueue().poll();
+        Map<Character, String> codeMap = new TreeMap<Character, String>();
+        traverser(codeMap, characterTree, "");
+
+        return codeMap;
+    }
+
+    public void traverser (Map<Character, String> map, TreeData tree, String pathSoFar) {
+        if (tree.isLeaf()) {
+            map.put((tree.getKey()), pathSoFar);
+            return;
+        }
+
+        if (tree.hasLeft()) {
+            traverser(map, tree.getLeft(), pathSoFar + '0' );
+        }
+
+        if (tree.hasRight()) {
+            traverser(map, tree.getRight(), pathSoFar + '1' );
+        }
+    }
+
+
+//    public BinaryTree<E> copyToDepth(int d) {
+//        if (d == 0) {
+//            return new BinaryTree<E>(data);
+//        }
+//        BinaryTree<E> l = null;
+//        BinaryTree<E> r = null;
+//        if (hasLeft()) {
+//            l = left.copyToDepth(d-1);
+//        }
+//        if (hasRight()) {
+//            r = right.copyToDepth(d-1);
+//        }
+//        return new BinaryTree<E>(data, l, r);
 //    }
-//
-////    public BinaryTree<E> copyToDepth(int d) {
-////        if (d == 0) {
-////            return new BinaryTree<E>(data);
-////        }
-////        BinaryTree<E> l = null;
-////        BinaryTree<E> r = null;
-////        if (hasLeft()) {
-////            l = left.copyToDepth(d-1);
-////        }
-////        if (hasRight()) {
-////            r = right.copyToDepth(d-1);
-////        }
-////        return new BinaryTree<E>(data, l, r);
-////    }
 
     /**
      * Compression
