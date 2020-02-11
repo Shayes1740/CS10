@@ -9,14 +9,11 @@ public class HuffmanEncoding {
 
     private static final String fileName = "inputs/USConstitution.txt"; // where all the files are
 
-
-
     /**
      * frequencyTable() generates a map that maps each character in a document to the number of times it appears
      * in the document.
      */
     public static Map <Character, Integer> frequencyTable () {
-        String test = "We won't go to all that trouble here.  This string contains multiple words. And multiple copies of multiple words.  And multiple words with multiple copies";
         Map<Character,Integer> wordCounts = new TreeMap<Character,Integer>();
         BufferedReader input = null;
         int current = 0;
@@ -57,11 +54,12 @@ public class HuffmanEncoding {
      * Priority queue
      */
 
-    public static PriorityQueue<TreeData> priorityQueue () {
+    public static PriorityQueue<TreeData> priorityQueue (Map <Character, Integer> frequencyTable) throws IOException {
         Comparator<TreeData> treeCompare = new TreeComparator();
-        PriorityQueue<TreeData> pQueue = new PriorityQueue<TreeData>(frequencyTable().size(), treeCompare);
-        for (Character k : frequencyTable().keySet()) {
-            TreeData initTree = new TreeData(k, frequencyTable().get(k));
+        if (frequencyTable.keySet().size() == 0) throw new IOException();
+        PriorityQueue<TreeData> pQueue = new PriorityQueue<TreeData>(frequencyTable.size(), treeCompare);
+        for (Character k : frequencyTable.keySet()) {
+            TreeData initTree = new TreeData(k, frequencyTable.get(k));
             pQueue.add(initTree);
         }
 
@@ -86,11 +84,12 @@ public class HuffmanEncoding {
      * Code retrieval
      */
 
-    public static Map<Character, String> codeTree () {
-        TreeData characterTree = priorityQueue().poll();
+    public static Map<Character, String> codeTree (TreeData tree) throws IOException{
+        TreeData characterTree = tree;
         Map<Character, String> codeMap = new TreeMap<Character, String>();
-        traverser(codeMap, characterTree, "");
-
+        if (characterTree != null) {
+            traverser(codeMap, characterTree, "");
+        }
         return codeMap;
     }
 
@@ -191,8 +190,16 @@ public class HuffmanEncoding {
 
 
     public static void main(String[] args) throws IOException{
-        compress(codeTree());
-        decompress(priorityQueue().poll());
+        Map <Character, Integer> freqTable;
+        TreeData treeData;
+        Map <Character, String> codeTree;
+
+        freqTable = frequencyTable();
+        treeData = priorityQueue(freqTable).poll();
+        codeTree = codeTree(treeData);
+
+        compress(codeTree);
+        decompress(treeData);
 
     }
 
