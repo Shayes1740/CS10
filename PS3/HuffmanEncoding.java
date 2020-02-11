@@ -44,7 +44,7 @@ public class HuffmanEncoding {
                 current = input.read();
             }
             catch (IOException e1) {
-                System.out.println("Empty File");
+                System.out.println("Error Reading");
             }
         }
         return wordCounts;
@@ -56,7 +56,7 @@ public class HuffmanEncoding {
 
     public static PriorityQueue<TreeData> priorityQueue (Map <Character, Integer> frequencyTable) throws IOException {
         Comparator<TreeData> treeCompare = new TreeComparator();
-        if (frequencyTable.keySet().size() == 0) throw new IOException();
+        if (frequencyTable.keySet().size() == 0) throw new IOException("No keys found (file is empty)." );
         PriorityQueue<TreeData> pQueue = new PriorityQueue<TreeData>(frequencyTable.size(), treeCompare);
         for (Character k : frequencyTable.keySet()) {
             TreeData initTree = new TreeData(k, frequencyTable.get(k));
@@ -197,6 +197,10 @@ public class HuffmanEncoding {
         freqTable = frequencyTable();
         treeData = priorityQueue(freqTable).poll();
         codeTree = codeTree(treeData);
+
+        for (Character c : codeTree.keySet()) {
+            System.out.println(c + ":  " + freqTable.get(c));
+        }
 
         compress(codeTree);
         decompress(treeData);
