@@ -15,7 +15,7 @@ public class HuffmanEncoding {
      * frequencyTable() generates a map that maps each character in a document to the number of times it appears
      * in the document.
      */
-    public Map <Character, Integer> frequencyTable () {
+    public static Map <Character, Integer> frequencyTable () {
         String test = "We won't go to all that trouble here.  This string contains multiple words. And multiple copies of multiple words.  And multiple words with multiple copies";
         Map<Character,Integer> wordCounts = new TreeMap<Character,Integer>();
         BufferedReader input = null;
@@ -57,7 +57,7 @@ public class HuffmanEncoding {
      * Priority queue
      */
 
-    public PriorityQueue<TreeData> priorityQueue () {
+    public static PriorityQueue<TreeData> priorityQueue () {
         Comparator<TreeData> treeCompare = new TreeComparator();
         PriorityQueue<TreeData> pQueue = new PriorityQueue<TreeData>(frequencyTable().size(), treeCompare);
         for (Character k : frequencyTable().keySet()) {
@@ -86,7 +86,7 @@ public class HuffmanEncoding {
      * Code retrieval
      */
 
-    public Map<Character, String> codeTree () {
+    public static Map<Character, String> codeTree () {
         TreeData characterTree = priorityQueue().poll();
         Map<Character, String> codeMap = new TreeMap<Character, String>();
         traverser(codeMap, characterTree, "");
@@ -94,7 +94,7 @@ public class HuffmanEncoding {
         return codeMap;
     }
 
-    public void traverser (Map<Character, String> map, TreeData tree, String pathSoFar) {
+    public static void traverser (Map<Character, String> map, TreeData tree, String pathSoFar) {
         if (tree.isLeaf()) {
             map.put((tree.getKey()), pathSoFar);
             return;
@@ -114,7 +114,7 @@ public class HuffmanEncoding {
      * Compression
      */
 
-    public void compress (Map<Character, String> map) throws IOException{
+    public static void compress (Map<Character, String> map) throws IOException{
         BufferedReader input = new BufferedReader(new FileReader(fileName));
         BufferedBitWriter bitOutput = new BufferedBitWriter(fileName.substring(0, fileName.indexOf('.')) + "_compressed.txt");
         int current = input.read();
@@ -140,7 +140,7 @@ public class HuffmanEncoding {
      * Decompression
      */
 
-    public void decompress (TreeData tree) throws IOException{
+    public static void decompress (TreeData tree) throws IOException{
         BufferedWriter output = new BufferedWriter(new FileWriter(fileName.substring(0, fileName.indexOf('.')) + "_decompressed.txt"));
         BufferedBitReader bitInput = new BufferedBitReader(fileName.substring(0, fileName.indexOf('.')) + "_compressed.txt");
         TreeData copyTree = tree;
@@ -190,7 +190,9 @@ public class HuffmanEncoding {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
+        compress(codeTree());
+        decompress(priorityQueue().poll());
 
     }
 
