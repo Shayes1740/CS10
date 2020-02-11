@@ -111,29 +111,56 @@ public class HuffmanEncoding {
     }
 
 
-//    public BinaryTree<E> copyToDepth(int d) {
-//        if (d == 0) {
-//            return new BinaryTree<E>(data);
-//        }
-//        BinaryTree<E> l = null;
-//        BinaryTree<E> r = null;
-//        if (hasLeft()) {
-//            l = left.copyToDepth(d-1);
-//        }
-//        if (hasRight()) {
-//            r = right.copyToDepth(d-1);
-//        }
-//        return new BinaryTree<E>(data, l, r);
-//    }
-
     /**
      * Compression
      */
+
+    public void compress (Map<Character, String> map) throws IOException{
+        BufferedReader input = new BufferedReader(new FileReader(fileName));
+        BufferedBitWriter bitOutput = new BufferedBitWriter("file_compressed.txt");
+        int current = input.read();
+        while (current != -1){
+            String data = map.get((char) current);
+                for (int i = 0; i < data.length(); i++){
+                    char c = data.charAt(i);
+                    if (c == '0'){
+                        bitOutput.writeBit(false);
+                    }
+                    else if (c == '1'){
+                        bitOutput.writeBit(true);
+                    }
+                }
+            current = input.read();
+        }
+        input.close();
+        bitOutput.close();
+    }
 
 
     /**
      * Decompression
      */
+
+    public void decompress (TreeData tree) throws IOException{
+        BufferedWriter output = new BufferedWriter(new FileWriter("file_decompressed.txt"));
+        BufferedBitReader bitInput = new BufferedBitReader("file_compressed.txt");
+
+        while (bitInput.hasNext()) {
+            TreeData copyTree = tree;
+            boolean bit = bitInput.readBit();
+            while (!tree.isLeaf()){
+                if (bit == true){
+                    copyTree = tree.getRight();
+                }
+                else {
+                    copyTree = tree.getLeft();
+                }
+            }
+        }
+    }
+
+
+
 
     public static void main(String[] args) {
 
