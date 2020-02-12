@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class HuffmanEncoding {
 
-    private static final String fileName = "inputs/USConstitution.txt"; // where all the files are
+    private static final String fileName = "inputs/WarAndPeace.txt"; // file name to test
 
     /**
      * frequencyTable() generates a map that maps each character in a document to the number of times it appears
