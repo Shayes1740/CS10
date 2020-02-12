@@ -55,29 +55,32 @@ public class HuffmanEncoding {
      */
 
     public static PriorityQueue<TreeData> priorityQueue (Map <Character, Integer> frequencyTable) throws IOException {
-        Comparator<TreeData> treeCompare = new TreeComparator();
-        if (frequencyTable.keySet().size() == 0) throw new IOException("No keys found (file is empty)." );
-        PriorityQueue<TreeData> pQueue = new PriorityQueue<TreeData>(frequencyTable.size(), treeCompare);
+        Comparator<TreeData> treeCompare = new TreeComparator();    //calls our custom comparator
+        if (frequencyTable.keySet().size() == 0) throw new IOException("No keys found (file is empty)." ); //throws an exception if the file and therefore the tree are empty
+        PriorityQueue<TreeData> pQueue = new PriorityQueue<TreeData>(frequencyTable.size(), treeCompare);   // creates our priority queue
+        //iterates over each key in a set of keys in the frequency table
         for (Character k : frequencyTable.keySet()) {
-            TreeData initTree = new TreeData(k, frequencyTable.get(k));
-            pQueue.add(initTree);
+            TreeData initTree = new TreeData(k, frequencyTable.get(k)); //creates a new tree for each character
+            pQueue.add(initTree);   //adds each tree for each character to the queue
         }
-
+        // reduces the number of trees in the priority queue by 1 each iteration until one tree is in the queue
         while (pQueue.size() > 1) {
+            //removes left and right nodes of the first tree in the queue
             TreeData T1 = pQueue.peek();
             pQueue.remove(T1);
 
             TreeData T2 = pQueue.peek();
             pQueue.remove(T2);
 
-            Character root = '▒';
+            Character root = '▒';   //obscure character used to root
 
+            //creates a new tree with left and right nodes rooted with the sum of their values
             TreeData newTree = new TreeData(root, (T1.getValue() + T2.getValue()), T1, T2);
-            pQueue.add(newTree);
+            pQueue.add(newTree);    //adds the new tree back to the queue
 
         }
 
-        return pQueue;
+        return pQueue;  //returns the queue with only one tree, the huffman code tree
     }
 
     /**
@@ -85,26 +88,32 @@ public class HuffmanEncoding {
      */
 
     public static Map<Character, String> codeTree (TreeData tree) throws IOException{
-        TreeData characterTree = tree;
-        Map<Character, String> codeMap = new TreeMap<Character, String>();
+        TreeData characterTree = tree;  //creates the character tree
+        Map<Character, String> codeMap = new TreeMap<Character, String>();  //creates the code map
+        //recursively call the traverser helper function to create the code map with a path of 1's and 0's for each character
         if (characterTree != null) {
             traverser(codeMap, characterTree, "");
         }
         return codeMap;
     }
 
+    /**
+     * Recursive helper function that traverses the tree and creates the code map
+     */
+
     public static void traverser (Map<Character, String> map, TreeData tree, String pathSoFar) {
+        // base case when the tree has been traversed to a leaf
         if (tree.isLeaf()) {
-            map.put((tree.getKey()), pathSoFar);
+            map.put((tree.getKey()), pathSoFar);    // add the path to the code map
             return;
         }
 
         if (tree.hasLeft()) {
-            traverser(map, tree.getLeft(), pathSoFar + '0' );
+            traverser(map, tree.getLeft(), pathSoFar + '0' );   //add a 0 to path so far
         }
 
         if (tree.hasRight()) {
-            traverser(map, tree.getRight(), pathSoFar + '1' );
+            traverser(map, tree.getRight(), pathSoFar + '1' );  //add a 1 to path so far
         }
     }
 
@@ -119,15 +128,15 @@ public class HuffmanEncoding {
         int current = input.read();
         while (current != -1){
             String data = map.get((char) current);
-                for (int i = 0; i < data.length(); i++){
-                    char c = data.charAt(i);
-                    if (c == '0'){
-                        bitOutput.writeBit(false);
-                    }
-                    else if (c == '1'){
-                        bitOutput.writeBit(true);
-                    }
+            for (int i = 0; i < data.length(); i++){
+                char c = data.charAt(i);
+                if (c == '0'){
+                    bitOutput.writeBit(false);
                 }
+                else if (c == '1'){
+                    bitOutput.writeBit(true);
+                }
+            }
             current = input.read();
         }
         input.close();
