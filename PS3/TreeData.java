@@ -6,6 +6,9 @@ import java.security.InvalidKeyException;
  *
  * @author Chris Bailey-Kellogg, Dartmouth CS 10, Fall 2012
  * @author CBK, Fall 2016, min
+ * @author Stuart Hayes and Jacob Fyda altered format to create trees of character type keys and integer type values.
+ * Also added a few getters and setters.
+ *
  */
 
 public class TreeData {

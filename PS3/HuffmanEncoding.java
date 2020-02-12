@@ -4,10 +4,16 @@ import java.util.*;
 import java.io.*;
 import java.io.IOException;
 
+/**
+ * This class implements Huffman Encoding to compress and decompress files using trees, maps, priority queues, and file
+ * I/O to help save bits.
+ *
+ * @author: Stuart Hayes and Jacob Fyda, Dartmouth CS 10, Winter 2020
+ */
 
 public class HuffmanEncoding {
 
-    private static final String fileName = "inputs/WarAndPeace.txt"; // file name to test
+    private static final String fileName = "inputs/AllSameCharacters.txt"; // file name to test
 
     /**
      * frequencyTable() generates a map that maps each character in a document to the number of times it appears
@@ -16,22 +22,22 @@ public class HuffmanEncoding {
     public static Map <Character, Integer> frequencyTable () {
         Map<Character,Integer> wordCounts = new TreeMap<Character,Integer>();
         BufferedReader input = null;
-        int current = 0;
+        int current = 0; //character being read
 
         try {
-            input = new BufferedReader(new FileReader(fileName));
+            input = new BufferedReader(new FileReader(fileName)); //instantiates BufferedReader using filename above
         }
-        catch (FileNotFoundException e) {
+        catch (FileNotFoundException e) { //throws error if file not found
             System.err.println("Cannot open file.\n" + e.getMessage());
             return wordCounts;
         }
         try {
-            current = input.read();
+            current = input.read(); //reads first character
         }
-        catch (IOException e1) {
+        catch (IOException e1) { //throws exception if no characters found
             System.out.println("Empty File");
         }
-
+        //while not at the end of the file, get a new character and add it to the map
         while (current != -1) {
             char character = (char) current;
             if (wordCounts.containsKey(character)){
@@ -119,24 +125,25 @@ public class HuffmanEncoding {
 
 
     /**
-     * Compression
+     * Compression algorithm converts text file into a series of bits
      */
 
-    public static void compress (Map<Character, String> map) throws IOException{
+    public static void compress (Map<Character, String> map) throws IOException {
         BufferedReader input = new BufferedReader(new FileReader(fileName));
         BufferedBitWriter bitOutput = new BufferedBitWriter(fileName.substring(0, fileName.indexOf('.')) + "_compressed.txt");
         int current = input.read();
+        //while there are still bits to write, write them based on the map of the strings in the original file
         while (current != -1){
             String data = map.get((char) current);
-            for (int i = 0; i < data.length(); i++){
-                char c = data.charAt(i);
-                if (c == '0'){
-                    bitOutput.writeBit(false);
+                for (int i = 0; i < data.length(); i++){
+                    char c = data.charAt(i);
+                    if (c == '0'){
+                        bitOutput.writeBit(false);
+                    }
+                    else if (c == '1'){
+                        bitOutput.writeBit(true);
+                    }
                 }
-                else if (c == '1'){
-                    bitOutput.writeBit(true);
-                }
-            }
             current = input.read();
         }
         input.close();
@@ -145,7 +152,7 @@ public class HuffmanEncoding {
 
 
     /**
-     * Decompression
+     * Decompression algorithm that takes a compressed file and converts it into a readable text file
      */
 
     public static void decompress (TreeData tree) throws IOException{
@@ -153,9 +160,9 @@ public class HuffmanEncoding {
         BufferedBitReader bitInput = new BufferedBitReader(fileName.substring(0, fileName.indexOf('.')) + "_compressed.txt");
         TreeData copyTree = tree;
 
-        if (copyTree == null) throw new IOException();
+        if (copyTree == null) throw new IOException(); // if tree does not exist throw error
 
-        else if (copyTree != null && copyTree.isLeaf()){
+        else if (copyTree != null && copyTree.isLeaf()){ // if the tree is only a leaf
             while (bitInput.hasNext()) {
                 boolean bit = bitInput.readBit();
                 output.write(copyTree.getKey());
@@ -163,13 +170,13 @@ public class HuffmanEncoding {
             }
         }
 
-        else if (copyTree != null && !copyTree.isLeaf()) {
+        else if (copyTree != null && !copyTree.isLeaf()) { // if tree exists and is longer than a leaf then iterate through
             while (bitInput.hasNext()) {
                 if (copyTree.isLeaf()){
                     output.write(copyTree.getKey());
                     copyTree = tree;
                 }
-                else {
+                else { //if not a leaf, traverse through tree left or right depending on if next bit is true or false
                     boolean bit = bitInput.readBit();
                     if (bit == true) {
                         copyTree = copyTree.getRight();
@@ -203,7 +210,7 @@ public class HuffmanEncoding {
         TreeData treeData;
         Map <Character, String> codeTree;
 
-        freqTable = frequencyTable();
+        freqTable = frequencyTable(); //generates frequency table
         treeData = priorityQueue(freqTable).poll();
         codeTree = codeTree(treeData);
 

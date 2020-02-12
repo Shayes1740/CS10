@@ -1,5 +1,11 @@
 import java.util.Comparator;
 
+/**
+ * This class implements a method to compare two trees
+ *
+ * @author: Stuart Hayes and Jacob Fyda, Dartmouth CS 10, Winter 2020
+ */
+
 public class TreeComparator implements Comparator<TreeData> {
 
     @Override
